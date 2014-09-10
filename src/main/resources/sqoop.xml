@@ -10,7 +10,9 @@
 		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<hadoop:configuration resources="file:${xd.home}/config/core-site.xml,file:${xd.home}/config/hdfs-site.xml,file:${xd.home}/config/mapred-site.xml,file:${xd.home}/config/yarn-site.xml"/>
+	<!-- todo: get config from env variable -->
+	<!-- <hadoop:configuration resources="file:${xd.home}/config/hadoop/core-site.xml,file:${xd.home}/config/hadoop/hdfs-site.xml,file:${xd.home}/config/hadoop/mapred-site.xml,file:${xd.home}/config/hadoop/yarn-site.xml"/> -->
+	<hadoop:configuration resources="file:#{systemEnvironment['HADOOP_CONF_DIR']}/core-site.xml,file:#{systemEnvironment['HADOOP_CONF_DIR']}/hdfs-site.xml,file:#{systemEnvironment['HADOOP_CONF_DIR']}/mapred-site.xml,file:#{systemEnvironment['HADOOP_CONF_DIR']}/yarn-site.xml"/>
 
 	<!-- required since Hadoop Job is a class not an interface and we need to 
 		use a Job with step scope to access #{jobParameters['...']} -->
@@ -18,7 +20,8 @@
 		<property name="proxyTargetClass" value="true" />
 	</bean>
 
-	<hadoop:jar-tasklet id="jar-tasklet" jar="file:${xd.home}/lib/${job_jar_name:xd-sqoop-module-0.0.1-SNAPSHOT-job.jar}" main-class="com.gopivotal.xd.sqoop.SqoopRunner">
+	<!-- todo: remove main class def with entry in jar manifest --> 
+	<hadoop:jar-tasklet id="jar-tasklet" jar="file:${xd.home}/modules/job/sqoop/lib/${job_jar_name:xd-sqoop-module-0.0.1-SNAPSHOT-job.jar}" main-class="com.gopivotal.xd.sqoop.SqoopRunner">
 		<hadoop:arg value="${command}"/>
 	</hadoop:jar-tasklet>
     
