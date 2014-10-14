@@ -4,9 +4,7 @@ import org.apache.sqoop.Sqoop;
 
 public class SqoopRunner {
 
-	// sqoop export --connect jdbc:mysql://192.168.178.13/sqoop_test --username
-	// gpadmin --password gpadmin --table cdr_orig --export-dir
-	// /xd/ti/data/out/prepared/dvcallreceived.csv
+	// sqoop export --connect jdbc:mysql://localhost/sqoop_test --username
 
 	public static void main(String[] args) {
 
