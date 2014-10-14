@@ -12,8 +12,18 @@
 
 	<!-- todo: get config from env variable -->
 	<!-- <hadoop:configuration resources="file:${xd.home}/config/hadoop/core-site.xml,file:${xd.home}/config/hadoop/hdfs-site.xml,file:${xd.home}/config/hadoop/mapred-site.xml,file:${xd.home}/config/hadoop/yarn-site.xml"/> -->
+	<!--
 	<hadoop:configuration resources="file:#{systemEnvironment['HADOOP_CONF_DIR']}/core-site.xml,file:#{systemEnvironment['HADOOP_CONF_DIR']}/hdfs-site.xml,file:#{systemEnvironment['HADOOP_CONF_DIR']}/mapred-site.xml,file:#{systemEnvironment['HADOOP_CONF_DIR']}/yarn-site.xml"/>
-
+	-->
+    
+    <hadoop:configuration register-url-handler="false" properties-location="${xd.config.home}/hadoop.properties">
+        fs.defaultFS=${spring.hadoop.fsUri}
+    </hadoop:configuration>
+    <!-- 
+    <hadoop:resource-loader id="hadoopResourceLoader"/>
+    -->
+    
+    
 	<!-- required since Hadoop Job is a class not an interface and we need to 
 		use a Job with step scope to access #{jobParameters['...']} -->
 	<bean class="org.springframework.batch.core.scope.StepScope">
