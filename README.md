@@ -1,10 +1,11 @@
 spring-xd-sqoop-job
 ===================
 
-Simple [Sqoop] Job module for [Spring-XD]. Works with [Pivotal HD] 1.0.1 and other 2.0.2-alpha based Hadoop distributions. 
+This is a fork from https://github.com/tzolov/spring-xd-sqoop-job that cleans up hadoop configuration mechanism.
 
-Example sqoop export usage:
+Simple [Sqoop] Job module for [Spring-XD]. Works with Hadopp 2 based Hadoop distributions. 
 
+Sqoop export usage:
 	xd:>job create --name <job-name> --definition "sqoop --command='export 
 	  	--connect jdbc:mysql://<db-hostname>/<target-db-name>
 	  	--table <target-table-name> 
@@ -12,32 +13,30 @@ Example sqoop export usage:
 	  	--password <db-password>
 	  	--export-dir /hdfs/source/folder/*.csv'"
 
+Example list table usage:
+	  	job create testsqoopjob --definition "sqoop list-tables --connect jdbc:postgresql://127.0.0.1:5432/tch --driver org.postgresql.Driver --username tch"
+
 
 ## Build and Installation
 
-Set the environment variable `XD_HOME` to the Spring-XD installation directory
+Build the job jar:
 
-	export XD_HOME=<root-install-dir>/spring-xd/xd
-	
-Build the Hadoop job jar:
+	mvn clean package
 
-	mvn clean install
+Copy the result `xd-sqoop-module-0.0.1-SNAPSHOT-job.jar` into `${XD_HOME}/modules/job/sqoop/lib`	
+	
+	cp target/xd-sqoop-module-0.0.1-SNAPSHOT-job.jar `${XD_HOME}/modules/job/sqoop/lib`
 
-Copy the result `xd-sqoop-module-0.0.1-SNAPSHOT-job.jar` into `${XD_HOME}/lib`	
+Copy the `sqoop.xml` module definition into `${XD_HOME}/modules/job/sqoop/config`	
 	
-	cp target/xd-sqoop-module-0.0.1-SNAPSHOT-job.jar `${XD_HOME}/lib`
+	cp src/main/resources/sqoop.xml ${XD_HOME}/modules/job/sqoop/config
+	
+Make sure that the hadoop fs uri is configured properly in spring xd servers.yml configuration file:
 
-Copy the `sqoop.xml` module definition into `${XD_HOME}/modules/jobs`	
-	
-	cp src/main/resources/sqoop.xml ${XD_HOME}/modules/job
-
-Copy the following Hadoop cluster configuration files into `${XD_HOME}/config`
-	
-	core-site.xml
-	hdfs-site.xml
-	mapred-site.xml
-	yarn-site.xml
-	
+	# Hadoop properties
+	spring:
+	  hadoop:
+	  fsUri: hdfs://localhost:8020
 
 ## Usage
 
@@ -45,19 +44,12 @@ Copy the following Hadoop cluster configuration files into `${XD_HOME}/config`
 
 Start the admin
 
-	${XD_HOME}/bin/xd-admin --hadoopDistro phd1
-
-Start container (in separate shell)	
-
-	${XD_HOME}/bin/xd-container --hadoopDistro phd1
-
-Alternatively instead of admin/container you can run xd-standalone `${XD_HOME}/bin/xd-standalone --hadoopDistro phd1`
-
-Note that the xd-container (or xd-standalone) node must run Java 6! Sqoop compiles the MapRed job on the fly on the container node. 
+	${XD_HOME}/bin/xd-single node --hadoopDistro cdh5
 
 Start xd-shell (in separate shell)
 
-	${XD_HOME}/../shell/bin/xd-shell --hadoopDistro phd1
+	${XD_HOME}/../shell/bin/xd-shell
+
 
 #### [Sqoop Export][]
 The export tool exports a set of files from HDFS back to an RDBMS. The target table must already exist in the database. The input files are read and parsed into a set of records according to the user-specified delimiters.
