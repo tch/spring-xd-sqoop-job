@@ -7,14 +7,15 @@ Simple [Sqoop] Job module for [Spring-XD]. Works with Hadopp 2 based Hadoop dist
 
 Sqoop export usage:
 	xd:>job create --name <job-name> --definition "sqoop --command='export 
-	  	--connect jdbc:mysql://<db-hostname>/<target-db-name>
-	  	--table <target-table-name> 
-	  	--username <db-username> 
-	  	--password <db-password>
-	  	--export-dir /hdfs/source/folder/*.csv'"
+	  --connect jdbc:mysql://<db-hostname>/<target-db-name>
+	  --table <target-table-name> 
+	  --username <db-username> 
+	  --password <db-password>
+	  --export-dir /hdfs/source/folder/*.csv'"
 
 Example list table usage:
-	  	job create testsqoopjob --definition "sqoop list-tables --connect jdbc:postgresql://127.0.0.1:5432/tch --driver org.postgresql.Driver --username tch"
+	  job create testsqoopjob --definition "sqoop --command='list-tables --connect=jdbc:postgresql://127.0.0.1:5432/tch --driver=org.postgresql.Driver --username=tch'"
+
 
 
 ## Build and Installation
